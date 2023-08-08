@@ -30,29 +30,6 @@ def show_mask(mask, ax, random_color=False):
     ax.imshow(mask_image)
 
 
-def show_points(coords, labels, ax, marker_size=375):
-    pos_points = coords[labels == 1]
-    neg_points = coords[labels == 0]
-    ax.scatter(
-        pos_points[:, 0],
-        pos_points[:, 1],
-        color="green",
-        marker="*",
-        s=marker_size,
-        edgecolor="white",
-        linewidth=1.25,
-    )
-    ax.scatter(
-        neg_points[:, 0],
-        neg_points[:, 1],
-        color="red",
-        marker="*",
-        s=marker_size,
-        edgecolor="white",
-        linewidth=1.25,
-    )
-
-
 def show_box(box, ax):
     x0, y0 = box[0], box[1]
     w, h = box[2] - box[0], box[3] - box[1]
@@ -170,37 +147,34 @@ def main(dataset_path, json_path, output_path, threshold):
                         input_boxes, image.shape[:2]
                     )
 
-                    if len(input_boxes) == 0:
-                        height, width, _ = image.shape
-                        black_image = np.zeros((height, width), dtype=np.uint8)
-
-                        imageio.imwrite(output_mask_path / f"{i:04}.png", black_image)
-                        output_frames.append(image)
-
-                        continue
-
-                    masks, _, _ = predictor.predict_torch(
-                        point_coords=None,
-                        point_labels=None,
-                        boxes=transformed_boxes,
-                        multimask_output=False,
-                    )
-
-                    masks = masks.cpu().numpy()
-                    merged_mask = (
-                        np.logical_or.reduce(masks).squeeze(axis=0).astype(np.uint8)
-                        * 255
-                    )
-                    imageio.imwrite(output_mask_path / f"{i:04}.png", merged_mask)
-
                     plt.figure()
                     plt.imshow(image)
 
-                    for mask in masks:
-                        show_mask(mask, plt.gca())
+                    if len(input_boxes) == 0:
+                        black_image = np.zeros(image.shape[:2], dtype=np.uint8)
 
-                    for box in input_boxes:
-                        show_box(box.cpu().numpy(), plt.gca())
+                        imageio.imwrite(output_mask_path / f"{i:04}.png", black_image)
+                    else:
+                        masks, _, _ = predictor.predict_torch(
+                            point_coords=None,
+                            point_labels=None,
+                            boxes=transformed_boxes,
+                            multimask_output=False,
+                        )
+
+                        masks = masks.cpu().numpy()
+                        merged_mask = (
+                            np.logical_or.reduce(masks).squeeze(axis=0).astype(np.uint8)
+                            * 255
+                        )
+
+                        imageio.imwrite(output_mask_path / f"{i:04}.png", merged_mask)
+
+                        for mask in masks:
+                            show_mask(mask, plt.gca())
+
+                        for box in input_boxes:
+                            show_box(box.cpu().numpy(), plt.gca())
 
                     plt.axis("off")
                     plt.tight_layout()
