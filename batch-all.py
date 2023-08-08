@@ -92,7 +92,6 @@ def main(dataset_path, json_path, threshold):
                         if confidence < threshold or class_id not in relevant_objects:
                             continue
 
-                        # x1, y1, x2, y2 = [round(i) for i in box]
                         image_boxes.append([round(i) for i in box])
 
                     image_boxes = torch.tensor(image_boxes, device=sam.device)
