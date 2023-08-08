@@ -170,6 +170,15 @@ def main(dataset_path, json_path, output_path, threshold):
                         input_boxes, image.shape[:2]
                     )
 
+                    if len(input_boxes) == 0:
+                        height, width, _ = image.shape
+                        black_image = np.zeros((height, width), dtype=np.uint8)
+
+                        imageio.imwrite(output_mask_path / f"{i:04}.png", black_image)
+                        output_frames.append(image)
+
+                        continue
+
                     masks, _, _ = predictor.predict_torch(
                         point_coords=None,
                         point_labels=None,
