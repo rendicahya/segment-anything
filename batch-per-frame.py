@@ -98,7 +98,7 @@ def show_box(box, ax):
         path_type=pathlib.Path,
     ),
 )
-@click.argument("threshold", nargs=1, required=False, type=float, default=0.2)
+@click.option("--threshold", nargs=1, required=False, type=float, default=0.2)
 def main(dataset_path, json_path, output_path, threshold):
     sam = sam_model_registry["vit_h"](checkpoint="checkpoints/sam_vit_h_4b8939.pth").to(
         device="cuda"
