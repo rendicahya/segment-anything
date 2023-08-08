@@ -114,7 +114,9 @@ def main(dataset_path, json_path, output_path, threshold):
                 n_frames = video.reader.nframes
 
                 output_frames = []
-                output_file_path = output_path / action.name / video_file.name
+                output_file_path = (
+                    output_path / action.name / video_file.with_suffix(".mp4").name
+                )
                 output_file_path.parent.mkdir(parents=True, exist_ok=True)
 
                 output_mask_path = (
