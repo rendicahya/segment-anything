@@ -77,7 +77,7 @@ def show_box(box, ax):
 )
 @click.option("--threshold", nargs=1, required=False, type=float, default=0.2)
 def main(dataset_path, json_path, output_path, threshold):
-    sam = sam_model_registry["vit_h"](checkpoint="checkpoints/sam_vit_h_4b8939.pth").to(
+    sam = sam_model_registry["vit_b"](checkpoint="checkpoints/sam_vit_b_01ec64.pth").to(
         device="cuda"
     )
     predictor = SamPredictor(sam)
@@ -187,12 +187,12 @@ def main(dataset_path, json_path, output_path, threshold):
                     image_array = np.array(canvas.buffer_rgba())
 
                     output_frames.append(image_array)
+                    plt.close()
 
                 ImageSequenceClip(output_frames, fps=video.fps).write_videofile(
                     str(output_file_path), audio=False, logger=None
                 )
 
-                plt.close()
                 video.close()
                 bar.update(1)
 
