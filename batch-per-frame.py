@@ -106,12 +106,10 @@ def main(dataset_path, json_path, output_path, threshold):
     predictor = SamPredictor(sam)
     n_files = sum(1 for f in dataset_path.glob("**/*") if f.is_file())
 
-    with open(
-        "/nas.dbms/randy/projects/UniDet/datasets/label_spaces/learned_mAP.json", "r"
-    ) as f:
+    with open("../UniDet/datasets/label_spaces/learned_mAP.json", "r") as f:
         unified_label_file = json.load(f)
 
-    with open("/nas.dbms/randy/projects/UniDet/ucf101_relevant_ids.json", "r") as f:
+    with open("../UniDet/ucf101_relevant_ids.json", "r") as f:
         relevant_ids = json.load(f)
 
     thing_classes = [
@@ -180,7 +178,10 @@ def main(dataset_path, json_path, output_path, threshold):
                     )
 
                     masks = masks.cpu().numpy()
-                    merged_mask = np.logical_or.reduce(masks).squeeze(axis=0).astype(np.uint8) * 255
+                    merged_mask = (
+                        np.logical_or.reduce(masks).squeeze(axis=0).astype(np.uint8)
+                        * 255
+                    )
                     imageio.imwrite(output_mask_path / f"{i:04}.png", merged_mask)
 
                     plt.figure()
