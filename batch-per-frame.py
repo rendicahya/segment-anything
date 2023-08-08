@@ -192,6 +192,7 @@ def main(dataset_path, json_path, output_path, threshold):
                     str(output_file_path), audio=False, logger=None
                 )
 
+                video.close()
                 bar.update(1)
 
 
