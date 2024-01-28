@@ -70,7 +70,6 @@ def show_box(box, ax):
     type=click.Path(
         file_okay=False,
         dir_okay=True,
-        exists=True,
         readable=True,
         path_type=pathlib.Path,
     ),
